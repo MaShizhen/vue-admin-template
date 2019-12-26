@@ -1,21 +1,21 @@
 
-const tokens = {
+const sessionids = {
   admin: {
-    token: 'admin-token'
+    sessionid: 'admin-sessionid'
   },
   editor: {
-    token: 'editor-token'
+    sessionid: 'editor-sessionid'
   }
 }
 
 const users = {
-  'admin-token': {
+  'admin-sessionid': {
     roles: ['admin'],
     introduction: 'I am a super administrator',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
     name: 'Super Admin'
   },
-  'editor-token': {
+  'editor-sessionid': {
     roles: ['editor'],
     introduction: 'I am an editor',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
@@ -30,10 +30,10 @@ export default [
     type: 'post',
     response: config => {
       const { username } = config.body
-      const token = tokens[username]
+      const sessionid = sessionids[username]
 
       // mock error
-      if (!token) {
+      if (!sessionid) {
         return {
           code: 60204,
           message: 'Account and password are incorrect.'
@@ -42,7 +42,7 @@ export default [
 
       return {
         code: 20000,
-        data: token
+        data: sessionid
       }
     }
   },
@@ -52,8 +52,8 @@ export default [
     url: '/user/info\.*',
     type: 'get',
     response: config => {
-      const { token } = config.query
-      const info = users[token]
+      const { sessionid } = config.query
+      const info = users[sessionid]
 
       // mock error
       if (!info) {

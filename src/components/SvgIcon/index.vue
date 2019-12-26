@@ -13,17 +13,21 @@ export default {
   name: 'SvgIcon',
   props: {
     iconClass: {
-      type: String,
-      required: true
+      type: String, // 字符串类型
+      required: true // 必填
     },
     className: {
       type: String,
-      default: ''
+      default: '' // 默认值
     }
   },
   computed: {
     isExternal() {
       return isExternal(this.iconClass)
+    },
+    // 读取和设置
+    aPlus() {
+      return this.a + 1
     },
     iconName() {
       return `#icon-${this.iconClass}`

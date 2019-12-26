@@ -1,17 +1,17 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getSessionid, setSessionid, removeSessionid } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const state = {
-  token: getToken(),
+  sessionid: getSessionid(),
   name: '',
   avatar: '',
   roles: []
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_SESSIONID: (state, sessionid) => {
+    state.sessionid = sessionid
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -27,12 +27,13 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
+    debugger
+
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ usercode: username.trim(), userpw: password }).then((data) => {
+        commit('SET_SESSIONID', data.sessionID)
+        setSessionid(data.sessionID)
         resolve()
       }).catch(error => {
         reject(error)
@@ -43,13 +44,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
+      getInfo(state.sessionid).then((data) => {
         const { roles, name, avatar } = data
 
         // roles must be a non-empty array
@@ -70,10 +65,10 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
+      logout(state.sessionid).then(() => {
+        commit('SET_SESSIONID', '')
         commit('SET_ROLES', [])
-        removeToken()
+        removeSessionid()
         resetRouter()
         resolve()
       }).catch(error => {
@@ -82,12 +77,12 @@ const actions = {
     })
   },
 
-  // remove token
-  resetToken({ commit }) {
+  // remove sessionid
+  resetSessionid({ commit }) {
     return new Promise(resolve => {
-      commit('SET_TOKEN', '')
+      commit('SET_SESSIONID', '')
       commit('SET_ROLES', [])
-      removeToken()
+      removeSessionid()
       resolve()
     })
   }

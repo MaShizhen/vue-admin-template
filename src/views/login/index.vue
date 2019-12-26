@@ -89,9 +89,10 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
+        // 监听redirect参数，以便登录完成之后重定向
         this.redirect = route.query && route.query.redirect
       },
-      immediate: true
+      immediate: true // todo immediate
     }
   },
   methods: {
@@ -105,21 +106,20 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+    async handleLogin() {
+      const valid = await this.$refs.loginForm.validate()
+      if (valid) {
+        this.loading = true
+        try {
+          await this.$store.dispatch('user/login', this.loginForm)
+          this.$router.push({ path: this.redirect || '/' })
+          this.loading = false
+        } catch (e) {
+          this.loading = false
         }
-      })
+      } else {
+        console.log('error submit!!')
+      }
     }
   }
 }

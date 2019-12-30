@@ -1,9 +1,9 @@
 import request from '@/utils/request'
-import { productid, systemid } from '@/utils/config'
+import { productid } from '@/utils/config'
 
 export function login(data) {
   return request({
-    url: '/user-login',
+    url: '/login',
     method: 'post',
     data
   })
@@ -30,17 +30,16 @@ export function logout() {
 
 /**
  * 获取用户权限信息
- * @param {*} role_no 角色编号，如果不传递将按照第一个角色信息返回
+ * @param { string } role_no 角色编号,如果不传递将按照第一个角色信息返回
  */
-export function get_auth_info(role_no) {
+export function auth_info(role_no) {
   return request({
-    url: '/get-auth-info',
+    url: '/auth-info',
     method: 'post',
     data: {
       clienttype: '3',
       productid,
-      role_no,
-      systemid
+      role_no
     }
   })
 }

@@ -3,13 +3,15 @@ import Cookies from 'js-cookie'
 const SessionidKey = 'sessionid'
 
 export function getSessionid() {
-  return Cookies.get(SessionidKey)
+  return sessionStorage.getItem(SessionidKey)
 }
 
 export function setSessionid(sessionid) {
-  return Cookies.set(SessionidKey, sessionid)
+  sessionStorage.setItem(SessionidKey, sessionid)
+  Cookies.set(SessionidKey, sessionid)
 }
 
 export function removeSessionid() {
-  return Cookies.remove(SessionidKey)
+  sessionStorage.removeItem(SessionidKey)
+  Cookies.remove(SessionidKey)
 }

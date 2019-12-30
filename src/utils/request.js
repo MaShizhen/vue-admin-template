@@ -1,34 +1,12 @@
 import axios from 'axios'
 import { /** MessageBox, */ Message } from 'element-ui'
-import store from '@/store'
-import { getSessionid } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
+  withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
-
-// request interceptor 请求拦截器
-service.interceptors.request.use(
-  config => {
-    // do something before request is sent 在请求之前做一些逻辑处理
-
-    if (store.getters.sessionid) {
-      // let each request carry sessionid
-      // ['X-Sessionid'] is a custom headers key
-      // please modify it according to the actual situation
-      config.headers['sessionid'] = getSessionid()
-    }
-    return config
-  },
-  error => {
-    // do something with request error
-    console.log(error) // for debug
-    return Promise.reject(error)
-  }
-)
 
 // response interceptor
 service.interceptors.response.use(

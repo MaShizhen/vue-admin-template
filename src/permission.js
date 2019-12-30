@@ -19,7 +19,6 @@ router.beforeEach(async(to, from, next) => {
 
   // determine whether the user has logged in
   const hasSessionid = getSessionid()
-  debugger
   if (hasSessionid) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -32,16 +31,49 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
-          // get user info
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          debugger
-          const { roles } = await store.dispatch('user/getInfo')
-
+          // get user info, roles, menus
+          /** const menus = */ await store.dispatch('user/auth_info')
+          const menus = [{
+            menu_no: '1',
+            menu_name: '看板',
+            parent_no: '',
+            icon: 'dashboard',
+            is_show: true,
+            package_url: 'dashboard'
+          }, {
+            menu_no: '2',
+            menu_name: '示例',
+            parent_no: '',
+            icon: 'tree',
+            is_show: true,
+            package_url: null
+          }, {
+            menu_no: '3',
+            menu_name: '表格',
+            parent_no: '2',
+            icon: 'table',
+            is_show: true,
+            package_url: 'table'
+          }, {
+            menu_no: '4',
+            menu_name: '折叠树',
+            parent_no: '2',
+            icon: 'tree',
+            is_show: true,
+            package_url: 'tree'
+          }, {
+            menu_no: '5',
+            menu_name: '外链',
+            parent_no: '',
+            icon: 'link',
+            is_show: true,
+            package_url: 'https://panjiachen.github.io/vue-element-admin-site/#/'
+          }]
           // generate accessible routes map based on roles
-          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', menus)
+          console.log(accessRoutes)
           // dynamically add accessible routes
           router.addRoutes(accessRoutes)
-
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true })
